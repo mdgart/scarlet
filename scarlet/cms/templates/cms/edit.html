@@ -28,13 +28,13 @@
 
 			{% for line in fieldset %}
 				{{ line.errors }}
+                <p>
 				{% for field in line %}
-					<p {% if field.is_checkbox %}class="checkbox"{% endif %}>
-						{{ field.label_tag }}
-						{% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
-						{{ field.field }}
-					</p>
+                    {{ field.label_tag }}
+                    {% if field.field.help_text %}<em class="help">{{ field.field.help_text|safe }}</em>{% endif %}
+                    {{ field.field }}
 				{% endfor %}
+                </p>
 			{% endfor %}
 		</fieldset>
 		{% endfor %}
