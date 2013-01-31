@@ -15,6 +15,7 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField:    {'form_class': forms.SplitDateTimeField,
                               'widget': widgets.SplitDateTime()},
     models.DateField:        {'widget': widgets.DateWidget},
+    models.SlugField:        {'widget': widgets.AutoSlugWidget},
 }
 
 

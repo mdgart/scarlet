@@ -35,6 +35,7 @@ class AutoSlugWidget(widgets.TextInput):
             for k,v in prepopulated_fields.iteritems():
                 self.attrs['data-populate-source'] = ",".join(v)
 
+
 class TimeChoiceWidget(widgets.Select):
     """
     Widget for time fields. A select widget that will have a 'now'

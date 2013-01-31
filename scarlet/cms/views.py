@@ -310,10 +310,6 @@ class CMSView(BaseView):
                 field = copy.deepcopy(f)
                 field.widget.update_links(self.request, self.bundle.admin_site)
                 attrs[k] = field
-            if k in self.prepopulated_fields:
-                field = copy.deepcopy(f)
-                field.widget = widgets.AutoSlugWidget(prepopulated_fields={k:self.prepopulated_fields[k]})
-                attrs[k] = field
         if attrs:
             form_class = type(form_class.__name__, (form_class,), attrs)
 
@@ -403,6 +399,14 @@ class ModelCMSMixin(object):
         mbundle = None
         if kwargs.get('widget'):
             widget = kwargs.get('widget')
+            autoslug = self.prepopulated_fields \
+                and db_field.name in self.prepopulated_fields
+            if not self.object and autoslug:
+                widget = widget(
+                    prepopulated_fields={
+                        db_field.name:self.prepopulated_fields[db_field.name]})
+            elif autoslug:
+                widget = widget(prepopulated_fields=None)
             extra = kwargs.pop('widget_kwargs', {})
             if widget and isinstance(widget, type) and \
                             issubclass(widget, widgets.APIChoiceWidget):
