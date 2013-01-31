@@ -166,6 +166,8 @@ class CMSView(BaseView):
 
     required_groups = None
 
+    prepopulated_fields = None
+
     ORIGIN_ARGUMENT = 'o'
 
     def __init__(self, *args, **kwargs):
@@ -308,7 +310,10 @@ class CMSView(BaseView):
                 field = copy.deepcopy(f)
                 field.widget.update_links(self.request, self.bundle.admin_site)
                 attrs[k] = field
-
+            if k in self.prepopulated_fields:
+                field = copy.deepcopy(f)
+                field.widget = widgets.AutoSlugWidget(prepopulated_fields={k:self.prepopulated_fields[k]})
+                attrs[k] = field
         if attrs:
             form_class = type(form_class.__name__, (form_class,), attrs)
 
@@ -365,6 +370,7 @@ class ModelCMSMixin(object):
         for datetime fields, and APIChoiceWidget for
         foreign keys.
         """
+
         return helpers.FORMFIELD_FOR_DBFIELD_DEFAULTS
 
     def formfield_for_dbfield(self, db_field, **kwargs):

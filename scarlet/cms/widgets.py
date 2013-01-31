@@ -22,6 +22,19 @@ class DateWidget(widgets.TextInput):
         super(DateWidget, self).__init__(*args, **kwargs)
         self.attrs['data-date-format'] = "yyyy-mm-dd"
 
+
+class AutoSlugWidget(widgets.TextInput):
+    """
+    Widget that render a text field with data used
+    to auto populate the Input.
+
+    """
+    def __init__(self, prepopulated_fields=None, *args, **kwargs):
+        super(AutoSlugWidget, self).__init__(*args, **kwargs)
+        if prepopulated_fields:
+            for k,v in prepopulated_fields.iteritems():
+                self.attrs['data-populate-source'] = ",".join(v)
+
 class TimeChoiceWidget(widgets.Select):
     """
     Widget for time fields. A select widget that will have a 'now'
