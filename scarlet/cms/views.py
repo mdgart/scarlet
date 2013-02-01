@@ -401,7 +401,11 @@ class ModelCMSMixin(object):
             widget = kwargs.get('widget')
             autoslug = self.prepopulated_fields \
                 and db_field.name in self.prepopulated_fields
-            if not self.object and autoslug:
+            try:
+                obj = self.object
+            except:
+                obj = False
+            if not obj and autoslug:
                 widget = widget(
                     prepopulated_fields={
                         db_field.name:self.prepopulated_fields[db_field.name]})
