@@ -60,8 +60,6 @@ robyn-local.json
 # Caboose
 .bundle
 *.sass-cache
-# Avoid committing generated CSS
-scarlet/cms/static/*
 
 # Python
 *.py[co]
