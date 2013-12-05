@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.util import flatatt
+from django.forms.util import flatatt, ErrorList
 from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
@@ -14,6 +14,7 @@ from . import fields
 
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.ForeignKey:       {'widget': widgets.APIChoiceWidget},
+    models.ManyToManyField:  {'widget': widgets.APIManyChoiceWidget},
     models.DateTimeField:    {'form_class': forms.SplitDateTimeField,
                               'widget': widgets.SplitDateTime()},
     models.DateField:        {'widget': widgets.DateWidget},
@@ -185,6 +186,11 @@ class AdminField(object):
         self.is_first = is_first  # Whether this field is first on the line
         self.is_checkbox = isinstance(self.field.field.widget,
                                       forms.CheckboxInput)
+        self.is_date = isinstance(self.field.field,
+                                      forms.DateField) or \
+                       isinstance(self.field.field,
+                                      forms.SplitDateTimeField)
+
         self.is_order_field = isinstance(self.field.field,
                                         fields.OrderFormField)
 
@@ -240,7 +246,7 @@ class ReadOnlyField(object):
                            capfirst(conditional_escape(force_unicode(label)))))
 
     def errors(self):
-        return []
+        return ErrorList()
 
 def normalize_fieldsets(fieldsets):
     """

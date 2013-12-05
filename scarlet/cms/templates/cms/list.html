@@ -12,25 +12,27 @@
 
 	{% block filter %}
 	{% if filter_form %}
-
-	<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
-		<summary>
-			{% if filter_form.has_changed %}
-				<a class="filter-clear" href="{{ request.path }}">Clear</a>
-			{% endif %}
-			Filter
-		</summary>
-		<form action="" method="get">
-			{{ filter_form }}
-			<p><input type="submit" value="Filter" /></p>
-		</form>
-	</details>
+	<section class="filters">
+		<details id="filter" {% if filter_form.has_changed %}class="filtered"{% endif %}>
+			<summary>
+				{% if filter_form.has_changed %}
+					<a class="filter-clear" href="{{ request.path }}">Clear</a>
+				{% endif %}
+				Filter
+				<i></i>
+			</summary>
+			<form action="" method="get">
+				{{ filter_form }}
+				<p><input type="submit" value="Filter" /></p>
+			</form>
+		</details>
+	</section>
 	{% endif %}
 	{% endblock %}
 
 	{% block list %}
 	{% if show_form %}
-	<form data-form-id="list" action="{{ action_url }}" method="post">
+	<form data-form-id="list" name= "listform" action="{{ action_url }}" method="post">
 		{% csrf_token %}
 		{{ list.formset.management_form }}
 	{% endif %}
@@ -38,6 +40,9 @@
 	<table>
 		<thead>
 		<tr>
+			{% if actions %}
+			<th></th>
+			{% endif %}
 			<th></th>
             {% if not list.empty %}
 			    {% for f in list.labels %}
@@ -78,6 +83,11 @@
 			{% endif %}
 			{% endwith %}
 			</td>
+			{% if actions %}
+			<td class="checkbox">
+				<input type="checkbox" name ="{{ checkbox_name }}" value="{{ row.instance.pk }}" />
+			</td>
+			{% endif %}
 
 			{% for elem in row %}
 				<td>
@@ -104,11 +114,23 @@
 		{% endfor %}
 		</tbody>
 	</table>
-
+	{% block submit %}
 	{% if show_form and not list.empty %}
-		<p><a class="button" href="{{ cancel_url }}">Cancel</a><input class="big" type="submit" value="Save" /></p>
+		{% if actions %}
+			<select name="actions">
+				{% for name, desc in actions %}
+				{% bundle_url bundle name as url %}
+					<option value="{{ url }}">{{ desc }}</option>
+				{% endfor %}
+			</select>
+		{% endif %}
+		<p class="submit-row">
+			<a class="button" href="{{ cancel_url }}">Cancel</a>
+			<input class="big" type="submit" value="Save" />
+		</p>
 	</form>
 	{% endif %}
+	{% endblock %}
 
 	{% if is_paginated and not list.empty %}
 		<div class="pagination">

@@ -1,0 +1,27 @@
+{% extends base %}
+{% load cms %}
+{% block main_content %}
+
+<form action="{{ action_url }}" method="post">
+        {% csrf_token %}
+    {% bundle_url bundle "main_list" as cancel_url %}
+    <p>{{ conf_msg }}</p>
+        {% for item in queryset %}
+        <dl>
+            <dt>{{ item }}:<br>
+            	<dd>
+            	{% if item.is_published %}
+    			Currently live
+    			{% else %}
+    			Currently not live
+    			{% endif %}<br/>
+    			<dd>{{ item.status_line }}
+    	</dl>
+        {% endfor %}
+        {{ publish_form }}
+    <p class="submit-row">
+        <a class="button" href="{{ cancel_url }} ">Cancel</a>
+        <input class="big" type="submit" name='modify' value={{ action }} />
+    </p>
+</form>
+{% endblock %}
